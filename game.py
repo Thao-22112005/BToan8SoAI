@@ -21,7 +21,10 @@ def shuffle_state(state, steps=100):
 
 def apply_move(state, move):
     z = state.index(0)
-    r, c = divmod(z, N)
+    r, c = divmod(z, N) # r = z // N  (hàng)
+                        # c = z % N   (cột) N =3, z là vị trí index = 0, ví dụ index của số 0 là
+                        # 4 thì z//N=4//3=1 (hàng 1) và z%N=4%3=1 (cột 1) 
+                        # luu ý hàng và cột đều tính từ 0
     s = list(state)
 
     if move == 'U': nr, nc = r - 1, c
@@ -29,6 +32,8 @@ def apply_move(state, move):
     elif move == 'L': nr, nc = r, c - 1
     elif move == 'R': nr, nc = r, c + 1
     else: return state
+    #nr, nc là tọa độ “new row, new col” của ô mà ô trống sẽ đổi chỗ với nó.
+    #Nếu move không hợp lệ (khác U/D/L/R) thì trả về y nguyên state.
 
     nz = nr * N + nc
     s[z], s[nz] = s[nz], s[z]
@@ -36,7 +41,7 @@ def apply_move(state, move):
 
 
 def is_goal(state):
-    return state == tuple(range(1, N * N)) + (0,)
+    return state == tuple(range(1, N * N)) + (0,)  #N=3 => range(1,9)+0 => số chạy từ 1 đến 8 và 0 ở cuối
 
 
 def run_game(screen, font, mode, tiles=None):
