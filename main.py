@@ -1,5 +1,5 @@
 import pygame
-from game import run_game
+from game import run_game, GOAL_DEFAULT
 from menu import draw_menu, init_menu_background
 
 # -------- CONFIG --------
@@ -43,8 +43,8 @@ while True:
 
         if e.type == pygame.MOUSEBUTTONDOWN:
             if btn1.collidepoint(e.pos):
-                run_game(screen, font, "number")
+                run_game(screen, font, "number", goal=GOAL_DEFAULT)
             if btn2.collidepoint(e.pos):
-                run_game(screen, font, "image", tiles)
+                run_game(screen, font, "image", tiles, goal=GOAL_DEFAULT)
 
     pygame.display.flip()
