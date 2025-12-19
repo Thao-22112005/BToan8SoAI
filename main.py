@@ -4,7 +4,7 @@ from menu import draw_menu, init_menu_background
 
 # -------- CONFIG --------
 N = 3
-TILE = 100
+TILE = 110
 MARGIN = 5
 
 BOARD_SIZE = N*TILE + (N+1)*MARGIN  # 320

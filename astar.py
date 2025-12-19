@@ -102,7 +102,7 @@ def solve_astar(start, goal, verbose=False):
     # OPEN: (f, g, state)
     # dùng heapq để lấy f nhỏ nhất nhanh hơn
     open_set = []
-    heapq.heappush(open_set, (multi_manhattan(start, goals_pos_list), 0, start)) 
+    heapq.heappush(open_set, (multi_manhattan(start, goals_pos_list), 0, start)) #đẩy trạng thái start vào OPEN với f = h(start), g=0
     
     # CLOSE: các trạng thái đã mở rộng
     closed = set()
@@ -122,10 +122,8 @@ def solve_astar(start, goal, verbose=False):
         closed.add(cur)
 
         # dừng khi gặp bất kỳ goal nào
-        # gặp goal nào cũng dừng
         if cur in goals_set:
             moves = reconstruct_path(start, cur, came, verbose=verbose)
-            
             return moves, cur  #trả về cả trạng thái goal tìm được
 
         # Duyệt hàng xóm
@@ -139,7 +137,7 @@ def solve_astar(start, goal, verbose=False):
             if ns not in g or ng < g[ns]: 
                 g[ns] = ng
                 f = ng + multi_manhattan(ns, goals_pos_list) # f = g + h
-                heapq.heappush(open_set, (f, ng, ns)) # Đưa ns vào OPEN
+                heapq.heappush(open_set, (f, ng, ns)) # Đưa ns vào OPEN (đưa tất cả các hàng xóm vào OPEN để xét sau)
                 came[ns] = (cur, act) # Lưu lại đường đi
 
     # Không tìm được lời giải

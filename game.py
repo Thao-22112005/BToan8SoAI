@@ -5,7 +5,7 @@ from astar import solve_astar, neighbors
 
 # ================= CONFIG =================
 N = 3
-TILE = 100
+TILE = 110
 MARGIN = 5
 AI_DELAY = 0.2
 
@@ -54,7 +54,7 @@ def remap_tiles_for_goal(tiles, goal):
     tiles_by_value[v-1] là mảnh ảnh đúng dành cho tile số v theo goal.
     """
     tiles_by_value = [None] * (N * N - 1)  # cho 1..8
-    for pos, v in enumerate(goal):
+    for pos, v in enumerate(goal): # pos là vị trí, v là giá trị tại vị trí đó
         if v == 0:
             continue
         tiles_by_value[v - 1] = tiles[pos]  # mảnh ảnh đúng của vị trí pos trong ảnh gốc
@@ -81,7 +81,7 @@ def apply_move(state, move):
     if not (0 <= nr < N and 0 <= nc < N):
         return state
 
-    nz = nr * N + nc
+    nz = nr * N + nc # tính index của ô mới
     s[z], s[nz] = s[nz], s[z]
     return tuple(s)
 
@@ -91,24 +91,19 @@ def is_goal(state, goals=GOAL_DEFAULT):
 
 
 def run_game(screen, font, mode, tiles=None, goal=GOAL_DEFAULT):
-    # start được shuffle từ goal -> luôn đảm bảo có lời giải về goal
-    # state = shuffle_state(goal)
-    # state = (1, 2, 3,
-    #          4, 0, 6,
-    #          7, 5, 8)
 
     goal_for_shuffle = random.choice(goal)   # hoặc goals[0] trh nhiều goals nếu có 1 goal thì trả về goals[0] luôn
     state = shuffle_state(goal_for_shuffle)
     # goal dùng để hiển thị ảnh (ban đầu cố định theo goals[0])
     display_goal = goal[0]
-    ai_moves = []
+    ai_moves = [] # danh sách các bước di chuyển từ AI
     idx = 0
     solving = False
-    last = time.time()
+    last = time.time() # thời gian lần cuối AI di chuyển
 
     access_message = ""   # MESSAGE TRẠNG THÁI
 
-    clock = pygame.time.Clock()
+    clock = pygame.time.Clock() # TẠO ĐỒNG HỒ ĐỂ KIỂM SOÁT FPS
 
     # -------- CANH GIỮA BOARD --------
     W, H = screen.get_size()
@@ -128,7 +123,7 @@ def run_game(screen, font, mode, tiles=None, goal=GOAL_DEFAULT):
         screen.fill((40, 40, 40)) # DARK BACKGROUND
 
         # ---------- DRAW BOARD ----------
-        for i, v in enumerate(state):
+        for i, v in enumerate(state): # i là index, v là giá trị tại index đó
             if v == 0: continue
             r, c = divmod(i, N)
 
@@ -182,7 +177,7 @@ def run_game(screen, font, mode, tiles=None, goal=GOAL_DEFAULT):
                     access_message = "Game has been reset"
 
                 if e.key == pygame.K_a:
-                    access_message = "The AI ​is calculating..."
+                    access_message = "The AI is calculating..."
                     pygame.display.flip()
                     ai_moves, goal_found = solve_astar(state, goal, verbose=True)
 
