@@ -12,10 +12,24 @@ AI_DELAY = 0.2
 # GOAL DEFAULT (bạn tự set ở đây - goal bất kì)
 # VD goal chuẩn: (1,2,3,4,5,6,7,8,0)
 # VD goal 0 ở giữa: (1,2,3,4,0,5,6,7,8)
-GOAL_DEFAULT = (1, 2, 3,
+GOAL_DEFAULT = [(1, 2, 3,
                 4, 5, 6,
-                7, 8, 0)
+                7, 8, 0)]
 
+
+# GOAL_DEFAULT = [
+#     (1, 2, 3,
+#      4, 5, 6,
+#      7, 8, 0),
+
+#     (1, 2, 3,
+#      4, 0, 5,
+#      6, 7, 8),
+
+#     (1, 3, 6,
+#      5, 0, 2,
+#      4, 7, 8)
+# ]
 # GOAL_DEFAULT = (1, 2, 3,
 #                 4, 0, 5,
 #                 6, 7, 8)
@@ -72,17 +86,21 @@ def apply_move(state, move):
     return tuple(s)
 
 
-def is_goal(state, goal=GOAL_DEFAULT):
-    return state == goal  
+def is_goal(state, goals=GOAL_DEFAULT):
+    return state in goals
 
 
 def run_game(screen, font, mode, tiles=None, goal=GOAL_DEFAULT):
     # start được shuffle từ goal -> luôn đảm bảo có lời giải về goal
-    state = shuffle_state(goal)
+    # state = shuffle_state(goal)
     # state = (1, 2, 3,
     #          4, 0, 6,
     #          7, 5, 8)
 
+    goal_for_shuffle = random.choice(goal)   # hoặc goals[0] trh nhiều goals nếu có 1 goal thì trả về goals[0] luôn
+    state = shuffle_state(goal_for_shuffle)
+    # goal dùng để hiển thị ảnh (ban đầu cố định theo goals[0])
+    display_goal = goal[0]
     ai_moves = []
     idx = 0
     solving = False
@@ -101,7 +119,7 @@ def run_game(screen, font, mode, tiles=None, goal=GOAL_DEFAULT):
     # remap ảnh theo goal 
     tiles_by_value = None
     if mode == "image" and tiles is not None:
-        tiles_by_value = remap_tiles_for_goal(tiles, goal)
+        tiles_by_value = remap_tiles_for_goal(tiles, display_goal)
 
     # ================= GAME LOOP =================
     while True:
@@ -157,21 +175,30 @@ def run_game(screen, font, mode, tiles=None, goal=GOAL_DEFAULT):
                     return
 
                 if e.key == pygame.K_r:
-                    state = shuffle_state(goal)
+                    # state = shuffle_state(goal)
+                    goal_for_shuffle = random.choice(goal)   # hoặc goals[0]
+                    state = shuffle_state(goal_for_shuffle)
                     solving = False
                     access_message = "Game has been reset"
 
                 if e.key == pygame.K_a:
                     access_message = "The AI ​is calculating..."
                     pygame.display.flip()
+                    ai_moves, goal_found = solve_astar(state, goal, verbose=True)
 
-                    ai_moves = solve_astar(state, goal, verbose=True)
-                    if not ai_moves:
+                    if goal_found is None:
                         access_message = "AI could not find the solution"
                         solving = False
                     else:
+                        # remap ảnh theo goal mà AI thật sự dừng lại
+                        display_goal = goal_found
+                        if mode == "image" and tiles is not None:
+                            tiles_by_value = remap_tiles_for_goal(tiles, display_goal)
+
                         idx = 0
                         solving = True
+                        access_message = "AI found a goal and is solving..."
+
 
             # ---------- MOUSE ----------
             if e.type == pygame.MOUSEBUTTONDOWN and not solving: # CHỈ CHƠI KHI KHÔNG ĐANG GIẢI BẰNG AI

@@ -30,6 +30,9 @@ def manhattan(state, goal_pos):
         dist += abs(r - tr) + abs(c - tc)
     return dist
 
+def multi_manhattan(state, goals_pos_list):
+    # h(s) = min Manhattan(s, g) với mọi g trong tập goals
+    return min(manhattan(state, gp) for gp in goals_pos_list)
 
 def neighbors(state):
     res = []
@@ -75,13 +78,31 @@ def reconstruct_path(start, goal, came, verbose=True): #verbose là để in chi
 
 
 def solve_astar(start, goal, verbose=False):
+    is_tuple = isinstance(goal, tuple) #kiểm tra goal có phải tuple không
+    correct_length = len(goal) == N * N #kiểm tra goal có đúng độ dài không
+    all_int = True
+
+    for x in goal:
+        if not isinstance(x, int): #isinstance kiểm tra kiểu dữ liệu a có phải kiểu b không
+            all_int = False
+            break
+
+    is_single = is_tuple and correct_length and all_int # goal là 1 goal đơn
+    if is_single:
+        goals = [goal]
+    else:
+        goals = list(goal)  # giả định goal là iterable các goal
+
+    goals_set = set(goals)  # để check in O(1)
     # goal được truyền vào từ game.py (goal bất kì)
-    goal_pos = build_goal_pos(goal)
+    # goal_pos = build_goal_pos(goal)
+    # precompute vị trí đích cho từng goal
+    goals_pos_list = [build_goal_pos(g) for g in goals_set]
 
     # OPEN: (f, g, state)
     # dùng heapq để lấy f nhỏ nhất nhanh hơn
     open_set = []
-    heapq.heappush(open_set, (manhattan(start, goal_pos), 0, start)) 
+    heapq.heappush(open_set, (multi_manhattan(start, goals_pos_list), 0, start)) 
     
     # CLOSE: các trạng thái đã mở rộng
     closed = set()
@@ -100,9 +121,12 @@ def solve_astar(start, goal, verbose=False):
         # Đánh dấu đã duyệt
         closed.add(cur)
 
-        # Đạt đích
-        if cur == goal:
-            return reconstruct_path(start, goal, came, verbose=verbose)
+        # dừng khi gặp bất kỳ goal nào
+        # gặp goal nào cũng dừng
+        if cur in goals_set:
+            moves = reconstruct_path(start, cur, came, verbose=verbose)
+            
+            return moves, cur  #trả về cả trạng thái goal tìm được
 
         # Duyệt hàng xóm
         for ns, act in neighbors(cur): # ns là trạng thái hàng xóm, act là hành động di chuyển
@@ -114,9 +138,9 @@ def solve_astar(start, goal, verbose=False):
             # Nếu tìm được đường đi tốt hơn
             if ns not in g or ng < g[ns]: 
                 g[ns] = ng
-                f = ng + manhattan(ns, goal_pos) # f = g + h
+                f = ng + multi_manhattan(ns, goals_pos_list) # f = g + h
                 heapq.heappush(open_set, (f, ng, ns)) # Đưa ns vào OPEN
                 came[ns] = (cur, act) # Lưu lại đường đi
 
     # Không tìm được lời giải
-    return []
+    return [], None

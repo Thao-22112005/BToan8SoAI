@@ -20,7 +20,7 @@ font = pygame.font.SysFont(None, 40)
 init_menu_background(screen)
 
 # -------- LOAD IMAGE PUZZLE --------
-IMAGE = pygame.image.load("bg.jpg").convert()
+IMAGE = pygame.image.load("anh-mo-ta.jpg").convert()
 IMAGE = pygame.transform.scale(IMAGE, (BOARD_SIZE, BOARD_SIZE))
 
 tiles = []
