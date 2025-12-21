@@ -6,11 +6,12 @@ def build_goal_pos(goal):
     pos = {}
     for idx, v in enumerate(goal):
         pos[v] = divmod(idx, N)   # v -> (row, col) #Ví dụ goal:(1,2,3,4,0,5,6,7,8)
-                                  # thì pos[5] = divmod(4,3) = (1,1) (hàng 1,cột 1)=>gán với tr,tc ở manhattan
+                                  # thì pos[5] = divmod(5,3) = (1,2) (hàng 1,cột 2)=>gán với tr,tc ở manhattan
     return pos
 
 
-# Hàm tính toán khoảng cách Manhattan là hàm ưngs dụng phổ biến trong thuật toán A* để đánh giá chi phí ước lượng từ trạng thái hiện tại đến trạng thái đích.
+# Hàm tính toán khoảng cách Manhattan là hàm ưngs dụng phổ biến trong thuật toán A* để đánh giá chi phí
+# ước lượng từ trạng thái hiện tại đến trạng thái đích.
 # Manhattan distance là tổng khoảng cách theo hàng và cột từ vị trí hiện tại của mỗi ô đến vị trí đích của nó.
 # Manhattan = |x1 - x2| + |y1 - y2|
 # vdu ô số 5 đang ở vị trí (1,2) mà vị trí đích của nó là (1,1)
