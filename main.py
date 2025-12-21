@@ -41,7 +41,7 @@ while True:
             pygame.quit()
             exit()
 
-        if e.type == pygame.MOUSEBUTTONDOWN:
+        if e.type == pygame.MOUSEBUTTONDOWN: # Handle mouse clicks
             if btn1.collidepoint(e.pos):
                 run_game(screen, font, "number", goal=GOAL_DEFAULT)
             if btn2.collidepoint(e.pos):

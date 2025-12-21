@@ -12,24 +12,29 @@ AI_DELAY = 0.2
 # GOAL DEFAULT (bạn tự set ở đây - goal bất kì)
 # VD goal chuẩn: (1,2,3,4,5,6,7,8,0)
 # VD goal 0 ở giữa: (1,2,3,4,0,5,6,7,8)
-GOAL_DEFAULT = [(1, 2, 3,
-                4, 5, 6,
-                7, 8, 0)]
+# GOAL_DEFAULT = [(1, 2, 3,
+#                 4, 5, 6,
+#                 7, 8, 0)]
+
+# GOAL_DEFAULT =[(1,2,3,4,
+#                 5,6,7,8,
+#                 9,10,11,12,
+#                 13,14,15,0)]
 
 
-# GOAL_DEFAULT = [
-#     (1, 2, 3,
-#      4, 5, 6,
-#      7, 8, 0),
+GOAL_DEFAULT = [
+    (1, 2, 3,
+     4, 5, 6,
+     7, 8, 0),
 
-#     (1, 2, 3,
-#      4, 0, 5,
-#      6, 7, 8),
+    (1, 2, 3,
+     4, 0, 5,
+     6, 7, 8),
 
-#     (1, 3, 6,
-#      5, 0, 2,
-#      4, 7, 8)
-# ]
+    (1, 3, 6,
+     5, 0, 2,
+     4, 7, 8)
+]
 # GOAL_DEFAULT = (1, 2, 3,
 #                 4, 0, 5,
 #                 6, 7, 8)
@@ -59,6 +64,9 @@ def remap_tiles_for_goal(tiles, goal):
             continue
         tiles_by_value[v - 1] = tiles[pos]  # mảnh ảnh đúng của vị trí pos trong ảnh gốc
     return tiles_by_value
+
+# 1,2,3,4,5,6,7,8
+# tiles[0],tiles[1],tiles[2],tiles[3],tiles[4],tiles[5],tiles[6],tiles[7],tiles[8]
 
 
 def apply_move(state, move):
